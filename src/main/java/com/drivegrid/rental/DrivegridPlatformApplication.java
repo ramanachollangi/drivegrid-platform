@@ -1,4 +1,4 @@
-package com.sprdlearn.boot.drivegridplatform;
+package com.drivegrid.rental;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
