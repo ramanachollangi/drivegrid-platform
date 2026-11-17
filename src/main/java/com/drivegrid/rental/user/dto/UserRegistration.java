@@ -5,5 +5,10 @@ public record UserRegistration(String firstName,
                                String email,
                                String password,
                                String phoneNumber,
-                               String role) {
-}
+                               String role,
+                               String streetAddress,
+                               String city,
+                               String state,
+                               String zip,
+                               String country
+) {}

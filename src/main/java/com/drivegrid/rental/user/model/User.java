@@ -4,8 +4,7 @@ import com.drivegrid.rental.user.dto.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Builder
 @Entity
@@ -20,27 +19,33 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name="first_name",nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
+    @Column(name="last_name",nullable = false)
     private String lastName;
 
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
-    private String password; // Stored as a secure BCrypt hash
+    private String password;
 
+    @Column(name="phone_number",nullable = false)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role; // e.g., CUSTOMER, VENDOR, ADMIN
 
-    // One user can have multiple saved addresses for rental logistics
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<UserAddress> addresses = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    private UserAddress address;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
 }

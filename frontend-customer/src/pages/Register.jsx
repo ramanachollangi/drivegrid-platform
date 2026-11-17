@@ -9,7 +9,12 @@ export default function Register() {
         email: '',
         password: '',
         phoneNumber: '',
-        role: 'CUSTOMER'
+        role: 'CUSTOMER',
+        street: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        country: ''
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -20,50 +25,95 @@ export default function Register() {
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        setError('');
+        setLoading(true);
+
         try {
-            await axios.post('/auth/register', formData);
+            // Matches @RequestMapping("/api/v1/auth") + @PostMapping("/registerUser")
+            await axios.post('/auth/registerUser', formData);
             navigate('/login');
         } catch (err) {
-            setError('Registration failed. Email may already be in use.');
+            // Extract validation error or backend message if available
+            const errorMessage = err.response?.data?.message ||
+                err.response?.data?.email ||
+                'Registration failed. Please check your inputs or email uniqueness.';
+            setError(errorMessage);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white py-10">
-            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-lg">
                 <h2 className="text-3xl font-bold text-center mb-6 text-indigo-400">Join DriveGrid</h2>
                 {error && <div className="bg-red-500 text-white p-3 rounded mb-4 text-sm">{error}</div>}
                 <form onSubmit={handleRegister} className="space-y-4">
+                    {/* Personal Details */}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium mb-1">First Name</label>
-                            <input type="text" name="firstName" onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600" />
+                            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-indigo-500" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium mb-1">Last Name</label>
-                            <input type="text" name="lastName" onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600" />
+                            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-indigo-500" />
                         </div>
                     </div>
                     <div>
                         <label className="block text-sm font-medium mb-1">Email</label>
-                        <input type="email" name="email" onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600" />
+                        <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-indigo-500" />
                     </div>
                     <div>
                         <label className="block text-sm font-medium mb-1">Password</label>
-                        <input type="password" name="password" onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600" />
+                        <input type="password" name="password" value={formData.password} onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-indigo-500" />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Phone Number</label>
-                        <input type="text" name="phoneNumber" onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600" />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Phone Number</label>
+                            <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-indigo-500" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Register As</label>
+                            <select name="role" value={formData.role} onChange={handleChange} className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-indigo-500">
+                                <option value="CUSTOMER">Customer</option>
+                                <option value="VENDOR">Vendor</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Register As</label>
-                        <select name="role" value={formData.role} onChange={handleChange} className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600">
-                            <option value="CUSTOMER">Customer (Rent Vehicles)</option>
-                            <option value="VENDOR">Vendor (List Fleet/Cars/Bikes)</option>
-                        </select>
+
+                    {/* Address Section */}
+                    <div className="border-t border-gray-700 pt-4 mt-4">
+                        <h3 className="text-md font-semibold text-indigo-300 mb-3">Address Information</h3>
+                        <div className="space-y-3">
+                            <div>
+                                <label className="block text-sm font-medium mb-1">Street Address</label>
+                                <input type="text" name="street" value={formData.street} onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-indigo-500" placeholder="123 Main St" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">City</label>
+                                    <input type="text" name="city" value={formData.city} onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-indigo-500" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">State / Province</label>
+                                    <input type="text" name="state" value={formData.state} onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-indigo-500" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">Zip / Postal Code</label>
+                                    <input type="text" name="zipCode" value={formData.zipCode} onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-indigo-500" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">Country</label>
+                                    <input type="text" name="country" value={formData.country} onChange={handleChange} required className="w-full px-3 py-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-indigo-500" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 rounded font-bold transition">
+
+                    <button type="submit" className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 rounded font-bold transition mt-4">
                         Create Account
                     </button>
                 </form>
