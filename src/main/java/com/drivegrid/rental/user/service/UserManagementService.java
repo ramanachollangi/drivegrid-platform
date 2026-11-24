@@ -2,6 +2,7 @@ package com.drivegrid.rental.user.service;
 
 import com.drivegrid.rental.user.dto.Role;
 import com.drivegrid.rental.user.dto.UserRegistration;
+
 import com.drivegrid.rental.user.model.User;
 import com.drivegrid.rental.user.model.UserAddress;
 import com.drivegrid.rental.user.repository.AddressRepository;
@@ -45,7 +46,6 @@ public class UserManagementService {
     @Transactional(readOnly = true)
     public UserRegistration fetchUser(Long userId){
         User user= userRepository.getById(userId);
-        if (user == null) return null;
         return new UserRegistration(
                 user.getFirstName(),
                 user.getLastName(),
@@ -59,7 +59,6 @@ public class UserManagementService {
                 user.getAddress().getZipCode(),
                 user.getAddress().getCountry()
         );
-
     }
 
 }

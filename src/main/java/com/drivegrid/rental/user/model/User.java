@@ -38,7 +38,7 @@ public class User {
     @Column(nullable = false)
     private Role role; // e.g., CUSTOMER, VENDOR, ADMIN
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private UserAddress address;
 

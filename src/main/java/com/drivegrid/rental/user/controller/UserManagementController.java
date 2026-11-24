@@ -28,7 +28,5 @@ public class UserManagementController {
       return userManagementService.fetchUser(userId);
     }
 
-
-
 }
 
